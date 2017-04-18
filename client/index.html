@@ -12,6 +12,8 @@ http://cdn.socket.io/socket.io-1.4.5.js"
   var localMouseX = 0;
   var localMouseY = 0;
 
+  var tileSize = 10;
+
   var socket = io();
 
   socket.emit('test', {
@@ -22,15 +24,32 @@ http://cdn.socket.io/socket.io-1.4.5.js"
     console.log(data.msg);
   });
 
+  var drawTile = function (x, y){
+      ctx.fillStyle="#CCCCCC";
+      ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+      ctx.fillStyle="#EEEEEE";
+      ctx.fillRect(x * (tileSize) + 1, y * (tileSize) + 1, tileSize-2, tileSize-2);
+  }
+
   socket.on('gameState', function(data){
     ctx.clearRect(0, 0, 500, 500);
 
-    for(var i = 0; i < data.length; i++){
+    //Draw board
+    for(var i = 0; i < data.mapData.xSize; i++){
+      for(var j = 0; j < data.mapData.ySize; j++){
+        drawTile(i, j);
+      }
+    }
+
+    drawTile(10, 10);
+
+    ctx.fillStyle="#000000";
+    for(var i = 0; i < data.playerData.length; i++){
 
       //Draw number at server mouse position
     //  ctx.fillText('.', data[i].x, data[i].y);
       ctx.fillRect(localMouseX - 5, localMouseY - 5, 6, 6);
-      ctx.fillText(data[i].number, data[i].x, data[i].y);
+      ctx.fillText(data.playerData[i].number, data.playerData[i].x, data.playerData[i].y);
     }
   });
 

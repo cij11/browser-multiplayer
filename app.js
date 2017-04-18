@@ -10,6 +10,8 @@ app.use('/client',express.static(__dirname + '/client'));
 serv.listen(2000);
 console.log("Server started.");
 
+var boardXSize = 50;
+var boardYSize = 50;
 
 var SOCKET_LIST = {};
 var PLAYER_LIST = {};
@@ -88,11 +90,18 @@ setInterval(function(){
       }
     );
   }
+  var packet = {
+    playerData:pack,
+    mapData:{
+      xSize: boardXSize,
+      ySize: boardYSize
+    }
+  };
 
   //Emit packet to all clients
   for(var i in SOCKET_LIST){
     var socket = SOCKET_LIST[i];
     var player = PLAYER_LIST[i];
-    socket.emit('gameState', pack);
+    socket.emit('gameState', packet);
   }
 },1000/25);
