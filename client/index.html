@@ -1,0 +1,29 @@
+<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
+
+<script src="
+http://cdn.socket.io/socket.io-1.4.5.js"
+>
+</script>
+
+<script>
+  var ctx = document.getElementById("ctx").getContext("2d");
+  ctx.font = '30px Arial';
+
+  var socket = io();
+
+  socket.emit('test', {
+    string:'Test data string'
+  });
+
+  socket.on('serverMsg', function(data){
+    console.log(data.msg);
+  });
+
+  socket.on('gameState', function(data){
+    ctx.clearRect(0, 0, 500, 500);
+
+    for(var i = 0; i < data.length; i++){
+      ctx.fillText('P', data[i].x, data[i].y);
+    }
+  });
+</script>
